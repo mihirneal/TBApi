@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, redirect, render_template
 from PIL import Image
 from torchvision import transforms
 import torch
@@ -37,6 +37,14 @@ def predict():
     img_data = requests.get(img_url).content
     img = Image.open(BytesIO(img_data))
     class_id = get_prediction(image_bytes=img)
+
+    if class_id.item() == 0:
+        return redirect("https://www.tbdetect.com/general-9", code=302)
+    
+    elif class_id.item() == 1:
+        return redirect("https://www.tbdetect.com/copy-of-tbdetect-negative-approved", code=302)
+    
+        
 
 
     return render_template('index.html', res=class_id.item())
